@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  model: MyString
+  license_plate: MyString
+  active: false
+  motorcyclist: one
+
+two:
+  model: MyString
+  license_plate: MyString
+  active: false
+  motorcyclist: two

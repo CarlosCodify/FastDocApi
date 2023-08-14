@@ -1,7 +1,16 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Examples:
-#
-#   movies = Movie.create([{ name: "Star Wars" }, { name: "Lord of the Rings" }])
-#   Character.create(name: "Luke", movie: movies.first)
+
+# Limpiar registros existentes
+DocumentType.destroy_all
+
+# Crear varios tipos de documentos
+document_types_data = [
+  { name: 'Sobre', description: 'Documento en sobre' },
+  { name: 'Archivador', description: 'Documento en archivador' },
+  { name: 'Libro', description: 'Libro' },
+]
+
+document_types_data.each do |data|
+  DocumentType.create!(data)
+end
+
+puts 'Document Types seeded successfully'

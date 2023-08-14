@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_14_163634) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_14_193628) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -72,6 +72,17 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_14_163634) do
     t.index ["motorcyclist_id"], name: "index_notifications_on_motorcyclist_id"
   end
 
+  create_table "payments", force: :cascade do |t|
+    t.decimal "amount"
+    t.datetime "payment_date"
+    t.string "payer_type"
+    t.bigint "payer_id"
+    t.bigint "shipment_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["shipment_id"], name: "index_payments_on_shipment_id"
+  end
+
   create_table "people", force: :cascade do |t|
     t.string "name"
     t.string "surname"
@@ -93,7 +104,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_14_163634) do
   create_table "shipments", force: :cascade do |t|
     t.datetime "request_date"
     t.datetime "delivery_date"
-    t.bigint "motorcyclist_id", null: false
+    t.bigint "motorcyclist_id"
     t.bigint "document_id", null: false
     t.bigint "sender_customer_id", null: false
     t.bigint "receiver_customer_id", null: false
@@ -117,6 +128,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_14_163634) do
   add_foreign_key "motorcyclists", "people"
   add_foreign_key "motorocycles", "motorcyclists"
   add_foreign_key "notifications", "motorcyclists"
+  add_foreign_key "payments", "shipments"
   add_foreign_key "shipments", "customers", column: "receiver_customer_id"
   add_foreign_key "shipments", "customers", column: "sender_customer_id"
   add_foreign_key "shipments", "documents"

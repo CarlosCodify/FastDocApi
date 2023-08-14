@@ -8,9 +8,13 @@ class Api::V1::CustomersController < ApplicationController
     render json: @customers
   end
 
+  de
+
   # GET /api/v1/customers/1
   def show
-    render json: @customer
+    render json: @customer.as_json(except: %i[created_at updated_at],
+                                   include: [{ payments: { except: %i[created_at updated_at] } },
+                                               except: %i[created_at updated_at] ])
   end
 
   # POST /api/v1/customers

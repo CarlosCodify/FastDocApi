@@ -1,6 +1,15 @@
 Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
+      resources :shipments do
+        member do
+          post :assign_motorcyclist
+          post :start_delivery
+          post :complete_delivery
+          post :register_sender_payment
+          post :register_receiver_payment
+        end
+      end
       resources :documents
       resources :motorcyclists do
         resources :motorcycles, only: %i[index create]

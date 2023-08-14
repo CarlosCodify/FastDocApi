@@ -1,7 +1,7 @@
 class Shipment < ApplicationRecord
-  validates :request_date, :motorcyclist, :document, :sender_customer, :receiver_customer, :shipment_status, presence: true
+  validates :request_date, :document, :sender_customer, :receiver_customer, :shipment_status, presence: true
 
-  belongs_to :motorcyclist
+  belongs_to :motorcyclist, optional: true
   belongs_to :document
   belongs_to :sender_customer, class_name: 'Customer'
   belongs_to :receiver_customer, class_name: 'Customer'

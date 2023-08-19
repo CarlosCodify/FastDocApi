@@ -25,6 +25,21 @@ class Api::V1::LocationsController < ApplicationController
     end
   end
 
+  def create2
+    @location = Location.new(location_params)
+    if @location.save
+      render json: @location, status: :created
+    else
+      render json: @location.errors, status: :unprocessable_entity
+    end
+  end
+
+  def list_locations
+    @locations = Location.where(customer_id: nil)
+
+    render json: @locations
+  end
+
   # PATCH/PUT /api/v1/locations/1
   def update
     if @location.update(location_params)

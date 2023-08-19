@@ -3,9 +3,9 @@ class Api::V1::MotorcyclistsController < ApplicationController
 
   # GET /api/v1/motorcyclists
   def index
-    @motorcyclists = Motorcyclist.all
+    @motorcyclists = Motorcyclist.includes(:person, :motorcycles).all
 
-    render json: @motorcyclists
+    render json: @motorcyclists.map { |m| custom_json(m) }
   end
 
   # GET /api/v1/motorcyclists/1
@@ -15,7 +15,9 @@ class Api::V1::MotorcyclistsController < ApplicationController
 
   # POST /api/v1/motorcyclists
   def create
-    @motorcyclist = Motorcyclist.new(motorcyclist_params)
+    person = Person.create!(motorcyclist_params)
+
+    @motorcyclist = Motorcyclist.create(person_id: person.id)
 
     if @motorcyclist.save
       render json: @motorcyclist, status: :created
@@ -26,7 +28,7 @@ class Api::V1::MotorcyclistsController < ApplicationController
 
   # PATCH/PUT /api/v1/motorcyclists/1
   def update
-    if @motorcyclist.update(motorcyclist_params)
+    if @motorcyclist.person.update(motorcyclist_params)
       render json: @motorcyclist
     else
       render json: @motorcyclist.errors, status: :unprocessable_entity
@@ -39,6 +41,16 @@ class Api::V1::MotorcyclistsController < ApplicationController
   end
 
   private
+
+    def custom_json(motorcyclist)
+      motorcyclist_attrs = motorcyclist.attributes
+      person_attrs = motorcyclist.person.attributes.except("id", "created_at", "updated_at")
+      motorcycles = motorcyclist.motorcycles.map do |motorcycle|
+        motorcycle.attributes.except("created_at", "updated_at")
+      end
+      motorcyclist_attrs.merge(person_attrs).merge(motorcycles: motorcycles)
+    end
+
     # Use callbacks to share common setup or constraints between actions.
     def set_motorcyclist
       @motorcyclist = Motorcyclist.find(params[:id])

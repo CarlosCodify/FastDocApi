@@ -1,4 +1,4 @@
-class DocumentsController < ApplicationController
+class  Api::V1::DocumentsController < ApplicationController
   before_action :set_document, only: %i[ show update destroy ]
 
   # GET /api/v1/documents

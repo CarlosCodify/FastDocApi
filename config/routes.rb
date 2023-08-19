@@ -19,7 +19,10 @@ Rails.application.routes.draw do
       resources :customers do
         resources :locations, only: %i[index create]
       end
-      resources :locations, only: %i[show update destroy]
+      resources :locations, only: %i[show update destroy] do
+        post :create2, on: :collection
+        get :list_locations, on: :collection
+      end
     end
   end
 end

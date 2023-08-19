@@ -14,7 +14,7 @@ default: &default
 
 development:
   <<: *default
-  database: fastdocbd
+  database: fastdocdb01
   username: carloshodzic
   password: V4mp1r0.
 

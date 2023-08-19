@@ -8,6 +8,10 @@ Rails.application.configure do
   # since you don't have to restart the web server when you make code changes.
   config.cache_classes = false
 
+  config.middleware.use ActionDispatch::Cookies
+  config.middleware.use ActionDispatch::Session::CookieStore
+
+
   # Do not eager load code on boot.
   config.eager_load = false
 
@@ -62,4 +66,6 @@ Rails.application.configure do
 
   # Uncomment if you wish to allow Action Cable access from any origin.
   # config.action_cable.disable_request_forgery_protection = true
+  config.hosts << 'https://eb30-181-115-208-125.ngrok-free.app'
+  config.hosts << 'eb30-181-115-208-125.ngrok-free.app'
 end

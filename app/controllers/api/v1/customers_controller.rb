@@ -3,12 +3,10 @@ class Api::V1::CustomersController < ApplicationController
 
   # GET /api/v1/customers
   def index
-    @customers = Customer.all
+    @customers = Customer.includes(:person).all
 
-    render json: @customers
+    render json: @customers.map { |m| custom_json(m) }
   end
-
-  de
 
   # GET /api/v1/customers/1
   def show
@@ -19,8 +17,9 @@ class Api::V1::CustomersController < ApplicationController
 
   # POST /api/v1/customers
   def create
-    @customer = Customer.new(customer_params)
-
+    person = Person.create!(customer_params)
+    @customer = Customer.create(person_id: person.id)
+    debugger
     if @customer.save
       render json: @customer, status: :created
     else
@@ -43,6 +42,12 @@ class Api::V1::CustomersController < ApplicationController
   end
 
   private
+
+    def custom_json(customer)
+      customer_attrs = customer.attributes
+      person_attrs = customer.person.attributes.except("id", "created_at", "updated_at")
+      customer_attrs.merge(person_attrs)
+    end
     # Use callbacks to share common setup or constraints between actions.
     def set_customer
       @customer =Customer.find(params[:id])

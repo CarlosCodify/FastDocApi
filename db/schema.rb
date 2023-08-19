@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_16_215638) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_18_013714) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -40,10 +40,20 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_16_215638) do
     t.string "latitude"
     t.string "longitude"
     t.string "description"
-    t.bigint "customer_id", null: false
+    t.bigint "customer_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["customer_id"], name: "index_locations_on_customer_id"
+  end
+
+  create_table "motorcycles", force: :cascade do |t|
+    t.string "model"
+    t.string "license_plate"
+    t.boolean "active"
+    t.bigint "motorcyclist_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["motorcyclist_id"], name: "index_motorcycles_on_motorcyclist_id"
   end
 
   create_table "motorcyclists", force: :cascade do |t|
@@ -51,16 +61,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_16_215638) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["person_id"], name: "index_motorcyclists_on_person_id"
-  end
-
-  create_table "motorocycles", force: :cascade do |t|
-    t.string "model"
-    t.string "license_plate"
-    t.boolean "active"
-    t.bigint "motorcyclist_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["motorcyclist_id"], name: "index_motorocycles_on_motorcyclist_id"
   end
 
   create_table "notifications", force: :cascade do |t|
@@ -92,7 +92,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_16_215638) do
     t.string "identity_document"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "type"
   end
 
   create_table "shipment_statuses", force: :cascade do |t|
@@ -150,8 +149,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_16_215638) do
   add_foreign_key "customers", "people"
   add_foreign_key "documents", "document_types"
   add_foreign_key "locations", "customers"
+  add_foreign_key "motorcycles", "motorcyclists"
   add_foreign_key "motorcyclists", "people"
-  add_foreign_key "motorocycles", "motorcyclists"
   add_foreign_key "notifications", "motorcyclists"
   add_foreign_key "payments", "shipments"
   add_foreign_key "shipments", "customers", column: "receiver_customer_id"

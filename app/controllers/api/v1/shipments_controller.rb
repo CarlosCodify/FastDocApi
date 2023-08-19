@@ -3,9 +3,9 @@ class Api::V1::ShipmentsController < ApplicationController
 
   # GET /api/v1/shipments
   def index
-    @shipments = Shipment.all
+    @shipments = Shipment.all.includes(:shipment_status, :motorcyclist, :pickup_location, :delivery_location)
 
-    render json: @shipments
+    render json: @shipments.as_json(include: [ :shipment_status, :motorcyclist, :pickup_location, :delivery_location ])
   end
 
   # GET /api/v1/shipments/1
@@ -16,7 +16,8 @@ class Api::V1::ShipmentsController < ApplicationController
   # POST /api/v1/shipments
   def create
     @shipment = Shipment.new(shipment_params)
-    @shipment.shipment_status_id = ShipmentStatus.find_by(description: 'Created').id
+    @shipment.shipment_status_id = ShipmentStatus.find_by(description: 'Pendiente').id
+    @shipment.request_date = DateTime.now
 
     if @shipment.save
       render json: @shipment, status: :created
@@ -41,7 +42,7 @@ class Api::V1::ShipmentsController < ApplicationController
 
   # Asignar un motociclista al envío
   def assign_motorcyclist
-    @shipment.shipment_status_id = ShipmentStatus.find_by(description: 'Assigned').id
+    @shipment.shipment_status_id = ShipmentStatus.find_by(description: 'Pendiente').id
     if @shipment.update(motorcyclist_id: params[:motorcyclist_id])
       render json: @shipment
     else
@@ -51,7 +52,7 @@ class Api::V1::ShipmentsController < ApplicationController
 
   # Iniciar la entrega
   def start_delivery
-    @shipment.shipment_status_id = ShipmentStatus.find_by(description: 'In Transit').id
+    @shipment.shipment_status_id = ShipmentStatus.find_by(description: 'En camino').id
     if @shipment.save
       render json: @shipment
     else
@@ -61,7 +62,7 @@ class Api::V1::ShipmentsController < ApplicationController
 
   # Completar la entrega
   def complete_delivery
-    @shipment.shipment_status_id = ShipmentStatus.find_by(description: 'Delivered').id
+    @shipment.shipment_status_id = ShipmentStatus.find_by(description: 'Entregado').id
     @shipment.delivery_date = DateTime.now
     if @shipment.save
       render json: @shipment
@@ -96,7 +97,7 @@ class Api::V1::ShipmentsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def shipment_params
-      params.require(:shipment).permit(:request_date, :document_id, :sender_customer_id, :receiver_customer_id, :pickup_location_id, :delivery_location_id)
+      params.require(:shipment).permit(:request_date, :document_id, :sender_customer_id, :receiver_customer_id, :pickup_location_id, :delivery_location_id, :motorcyclist_id)
     end
 
     def payment_params
